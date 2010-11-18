@@ -14,12 +14,11 @@ It's not the most elegant way to do this, and the code is pretty primitive. Cave
 A simple example...
 
 <code>
-
-$string = "This is some <<TEXT>>. Tokens will be replaced by appropriate <<VALUES>>.";
-$keysAndValues = array('TEXT'=>'tasty text', 'VALUES' => 'good times');
+$string = "This is some &lt;&lt;TEXT&gt;&gt;. Tokens will be replaced by appropriate &lt;&lt;VALUES&gt;&gt;.";
+$keysAndValues = array('TEXT'=&gt;'tasty text', 'VALUES' =&gt; 'good times');
 $replaced_string = new ScarletTokenizer()
 					->setSource($string)
-					->setTokenFormat('<<', '>>')
+					->setTokenFormat('&lt;&lt;', '&gt;&gt;')
 					->setInputs($keysAndValues)
 					->replaceTokens();
 echo $replaced_string;
