@@ -1,0 +1,12 @@
+A trivially simple token-replacement tool (I hesitate to call it a 'library').
+Given a token format (ie. '<<TOKEN>>' or '{TOKEN}') and a set of key-value pairs, we parse some body of text and replace those tokens with the appropriate values.
+
+USAGE
+
+$string = "This is some <<TEXT>>. Tokens will be replaced by appropriate <<VALUES>>.";
+$keysAndValues = array('TEXT'=>'tasty text', 'VALUES' => 'good times');
+$tokenizer = new ScarletTokenizer()
+					->setSource($string)
+					->setTokenFormat('<<', '>>')
+					->setInputs($keysAndValues)
+					->replaceTokens();
