@@ -15,19 +15,47 @@
 
 class ScarletTokenReplacer {
 	
+	/**
+	 * @var string
+	 */
 	private $_source;
+	
+	
+	/**
+	 * @var integer
+	 */
 	private $_countTokenKeys;
+	
+	/**
+	 * @var string
+	 */
 	private $_openToken;
+	
+	/**
+	 * @var string
+	 */
 	private $_closeToken;
+	
+	/**
+	 * @var array
+	 */	
 	private $_inputs;
+	
+	/**
+	 * @var array
+	 */
 	private $_keys;
 	
+	/**
+	 * Return self on construction.
+	 */
 	function __construct() {
 		return $this;
 	}
 
 	/**
 	 * Set the source material - the text that will have stuff replaced.
+	 * @param string $string
 	 */
 	function setSource($string=NULL) {
 		if($string == NULL || strlen($string) == 0) {
@@ -92,6 +120,7 @@ class ScarletTokenReplacer {
 	/** 
 	 * Ensure the token format is set - it must not be null and must be at least one character.
 	 * Open and close of the token can be different if desired (e.g. <<TOKEN| works)
+	 * @throws Exception
 	 */
 	private function verifyTokenFormat() {
 		if($this->_openToken == NULL || strlen($this->_openToken) == 0 || $this->_closeToken == NULL || strlen($this->_closeToken) == 0) {
@@ -102,7 +131,9 @@ class ScarletTokenReplacer {
 	}
 
 	/**
-	 * Flatten nested array of keys into an array of values
+	 * Flatten nested array of keys into an array of values. 
+	 * Thus, array(key1 => array(key11=>value, key12=>value))
+	 * becomes array(key1, key11, key12).
 	 */
 	private function array_flatten_keys($array, $return=array()) {
 		foreach ($array AS $key => $value) {
