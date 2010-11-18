@@ -14,13 +14,13 @@ It's not the most elegant way to do this, and the code is pretty primitive. Cave
 A simple example...
 
 <code>
-    $string = "This is some &lt;&lt;TEXT&gt;&gt;. Tokens will be replaced by appropriate &lt;&lt;VALUES&gt;&gt;.";
+    $string = "This is some <<TEXT>>. Tokens will be replaced by appropriate <<VALUES>>.";
 
-    $keysAndValues = array('TEXT'=&gt;'tasty text', 'VALUES' =&gt; 'good times');
+    $keysAndValues = array('TEXT'=>'tasty text', 'VALUES' =>'good times');
 
     $replaced_string = new ScarletTokenizer()
 					->setSource($string)
-					->setTokenFormat('&lt;&lt;', '&gt;&gt;')
+					->setTokenFormat('<<', '>>')
 					->setInputs($keysAndValues)
 					->replaceTokens();
 
@@ -29,7 +29,7 @@ A simple example...
 
 Outputs:
 <code>
-This is some tasty text. Tokens will be replaced by appropriate good times.
+    This is some tasty text. Tokens will be replaced by appropriate good times.
 </code>
 
 # REPEATING REPLACEMENTS
@@ -37,15 +37,15 @@ This is some tasty text. Tokens will be replaced by appropriate good times.
 You can also do more complex things with repeating replacements. If a key-value pair in the input is an array, the corresponding token will be treated as containing other tokens that are to be replaced for all values. Alright, that's hard to explain in text, so let me demonstrate:
 
 <code>
-$string = <<<EOT
-This is some more text. {TOKEN1}
-{MULTILINE}
-	Field 1: {Value1}
-	Field 2: {Value2}
-{/MULTILINE}
-<<<EOT;
+    $string = <<<EOT
+    This is some more text. {TOKEN1}
+    {MULTILINE}
+	    Field 1: {Value1}
+	    Field 2: {Value2}
+    {/MULTILINE}
+    <<<EOT;
 
-$keysAndValues = array(
+    $keysAndValues = array(
 					'TOKEN1'=>'Obviously.', 
 					'MULTILINE' => array(
 						array(
@@ -59,23 +59,23 @@ $keysAndValues = array(
  				 	)
 				);
 
-$replaced_string = new ScarletTokenizer()
+    $replaced_string = new ScarletTokenizer()
 					->setSource($string)
 					->setTokenFormat('<<', '>>')
 					->setInputs($keysAndValues)
 					->replaceTokens();
 
-echo $replaced_string;
+    echo $replaced_string;
 </code>
 
 Outputs:
 <code>
-This is some more text. Obviously.
+    This is some more text. Obviously.
 
-	Field 1: Hello
-	Field 2: World
+	    Field 1: Hello
+	    Field 2: World
 
-	Field 1: Foo
-	Field 2: Bar
+	    Field 1: Foo
+	    Field 2: Bar
 </code>
 
