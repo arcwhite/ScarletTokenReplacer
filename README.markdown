@@ -1,5 +1,5 @@
 A trivially simple token-replacement tool (I hesitate to call it a 'library').
-Given a token format (ie. '<<TOKEN>>' or '{TOKEN}') and a set of key-value pairs, we parse some body of text and replace those tokens with the appropriate values.
+Given a token format (ie. '&lt;&lt;TOKEN&gt;&gt;' or '{TOKEN}') and a set of key-value pairs, we parse some body of text and replace those tokens with the appropriate values.
 
 # DISCLAIMER
 
@@ -12,22 +12,21 @@ It's not the most elegant way to do this, and the code is pretty primitive. Cave
 # BASIC USAGE
 
 A simple example...
-
 <code>
     $string = "This is some <<TEXT>>. Tokens will be replaced by appropriate <<VALUES>>.";
 
     $keysAndValues = array('TEXT'=>'tasty text', 'VALUES' =>'good times');
 
-    $replaced_string = new ScarletTokenizer()
-					->setSource($string)
-					->setTokenFormat('<<', '>>')
-					->setInputs($keysAndValues)
-					->replaceTokens();
-
+    $tokenizer = new ScarletTokenizer();
+	$replaced_string = $tokenizer->setSource($string)
+						->setTokenFormat('<<', '>>')
+						->setInputs($keysAndValues)
+						->replaceTokens();
     echo $replaced_string;
 </code>
 
 Outputs:
+
 <code>
     This is some tasty text. Tokens will be replaced by appropriate good times.
 </code>
@@ -58,9 +57,8 @@ You can also do more complex things with repeating replacements. If a key-value 
 						)
  				 	)
 				);
-
-    $replaced_string = new ScarletTokenizer()
-					->setSource($string)
+	$tokenizer = new ScarletTokenizer();
+    $replaced_string = $tokenizer->setSource($string)
 					->setTokenFormat('<<', '>>')
 					->setInputs($keysAndValues)
 					->replaceTokens();
