@@ -2,7 +2,7 @@
 
 include("../lib/ScarletTokenReplacer.php");
 
-class SimpleReplacementTest extends PHPUnit_Framework_Testcase {
+class SimpleReplacementTests extends PHPUnit_Framework_Testcase {
 	
 	/**
 	 * Test the simplest possible case - one token.
@@ -14,7 +14,8 @@ class SimpleReplacementTest extends PHPUnit_Framework_Testcase {
 		$expectedOutput = "Just one replacement here.";
 		
 
-		$tokenizer = new ScarletTokenizer->setSource($string)->setTokenFormat("{", "}")->setInputs($inputs);
+		$tokenizer = new ScarletTokenReplacer();
+		$tokenizer->setSource($string)->setTokenFormat("{", "}")->setInputs($inputs);
 		$this->assertEquals($tokenizer->replaceTokens(), $expectedOutput);
 		
 	}
@@ -23,12 +24,13 @@ class SimpleReplacementTest extends PHPUnit_Framework_Testcase {
 	 * Test the case of two tokens.
 	 */
 	public function testTwoTokens() {
-		$string = "This time, there are {count} {things}."
-		$expectedOutput = "This time, there are several hams."
+		$string = "This time, there are {count} {things}.";
+		$expectedOutput = "This time, there are several hams.";
 		
 		$inputs = array("count" => "several", "things" => "hams");
 		
-		$tokenizer = new ScarletTokenizer->setSource($string)->setTokenFormat("{", "}")->setInputs($inputs);
+		$tokenizer = new ScarletTokenReplacer();
+		$tokenizer->setSource($string)->setTokenFormat("{", "}")->setInputs($inputs);
 		$this->assertEquals($tokenizer->replaceTokens(), $expectedOutput);
 	}
 	
@@ -72,18 +74,38 @@ class SimpleReplacementTest extends PHPUnit_Framework_Testcase {
 	 * Test multi-line replacement
 	 */
 	public function testMultilineTokengroups() {
+		$expectedOutput = <<< END
+Multi-line fun:
+	* for the whole family?
+	* for little Timmy?
+	* for nobody?
+		
+END;
+		
 		$string = <<< END
 Multi-line fun:
 {MULTILINE}
 	* {TEXT}
 {/MULTILINE}		
 END;
-		$inputs = array("MULTILINE"=>array(
-				"TEXT" => "for the whole family?",
-				"TEXT" => "for little Timmy?",
-				"TEXT" => "for nobody?"
+
+		$inputs = array("MULTILINE" => array(
+				array("TEXT" => "for the whole family?"),
+				array("TEXT" => "for little Timmy?"),
+				array("TEXT" => "for nobody?")
 			)
 		);
+		
+		$tokenizer = new ScarletTokenReplacer();
+		$tokenizer->setSource($string)
+				  ->setTokenFormat("{", "}")
+				  ->setInputs($inputs);
+		
+		var_dump($expectedOutput);
+		var_dump($tokenizer->replaceTokens());
+		
+		$this->assertEquals($tokenizer->replaceTokens(), $expectedOutput);
+		
 	}
 }
 

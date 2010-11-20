@@ -81,3 +81,15 @@ Outputs:
 
 NOTE: If you don't provide an array of inputs for a multi-line token, things will fall over horribly. We use the inputs during processing to determine if a token is a multi-line group or a one-off. This is a huge caveat and should definitely be fixed
 at some point in the future (but it worked for my particular case).
+
+# TESTS
+
+Unit tests are provided in tests/. They're pretty simplistic coverage, but they should hit most of the cases we need to be sure of. If you plan to make changes to this code, you will need
+	PHPUnit (http://www.phpunit.de/)
+
+(On Ubuntu, it's as easy as 'apt-get install phpunit')
+
+To run the tests, from the tests directory...
+&gt; phpunit SimpleReplacementTests.php
+
+Et voila!

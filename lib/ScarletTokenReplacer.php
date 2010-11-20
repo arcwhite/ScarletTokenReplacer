@@ -220,7 +220,7 @@ class ScarletTokenReplacer {
 			// this will fall over horribly.
 			if(is_array($value)) {
 				// This is a repeating line of items
-				$linepattern = '%'.$this->_openToken.$key.$this->_closeToken.'+(.*?)'.$this->_openToken.'/'.$key.$this->_closeToken.'+%Uis';
+				$linepattern = '%'.$this->_openToken.$key.$this->_closeToken.'\\n+(.*?)'.$this->_openToken.'/'.$key.$this->_closeToken.'+%Uis';
 
 				$matches = array();
 				$result = preg_match_all($linepattern, $this->_source, &$matches);
