@@ -137,16 +137,19 @@ class ScarletTokenReplacer {
 	 */
 	private function array_flatten_keys($array, $return=array()) {
 		foreach ($array AS $key => $value) {
+			// If the value for this key is an array, flatten it in turn
+			// and extract the keys
 			if(is_array($value)) {
 				$return = $this->array_flatten_keys($value,$return);
 				if(is_string($key)) {
 					$return[] = $key;
 				}
-			} else {
-				if($value) {
-					$return[] = $key;
-				}
-			}
+				continue; // Go to next value
+			} 	
+			
+			// Value is not an array, so we can take the key
+			// without further work.
+			$return[] = $key;			
 		}
 		return $return;
 
@@ -163,17 +166,22 @@ class ScarletTokenReplacer {
 		if($inputs == NULL || !is_array($inputs) || count($inputs) == 0) {
 			throw new Exception("You must specify inputs as an array");
 		}
-		
+		// Get an array of all keys in the input
 		$inputKeys = $this->array_flatten_keys($inputs);
+		// Get an array of all keys in the source text
 		$tokenKeys = array_keys($this->_keys);
 		
 		$diff_inputs = array_diff($inputKeys, $tokenKeys);
 		if(count($diff_inputs) > 0) {
+			// There's inputs not matches in the source
+			// (Remember, array_diff(A, B) is not array_diff(B, A))
 			throw new Exception("Unhandled keys in input: ".implode(",",$diff_inputs));
 		}
 		
 		$diff_tokens = array_diff($tokenKeys, $inputKeys);
 		if(count($diff_tokens) > 0) {
+			// There's tokens in the source not matches in the input
+			// (Remember, array_diff(A, B) is not array_diff(B, A))
 			throw new Exception("Unhandled keys in source string: ".implode(",",$diff_tokens));
 		}
 		
@@ -203,7 +211,13 @@ class ScarletTokenReplacer {
 		$this->verifyTokenFormat();
 		$this->verifyInputs();
 		
+		// Iterate over the inputs...
+		// This is kind of naive, really, but it works.
 		foreach($this->_inputs as $key => $value) {
+			// We determine if a token is multi-line based on the inputs.
+			// Potentially quite dumb, but quick-and-easy for this use case.
+			// NOTE: If you don't supply an array input for a multi-line token group,
+			// this will fall over horribly.
 			if(is_array($value)) {
 				// This is a repeating line of items
 				$linepattern = '%'.$this->_openToken.$key.$this->_closeToken.'+(.*?)'.$this->_openToken.'/'.$key.$this->_closeToken.'+%Uis';
@@ -213,16 +227,22 @@ class ScarletTokenReplacer {
 
 				$fieldset = "";
 				foreach($value as $line) {
+					// Repeat for each input
 					$newline = $matches[1][0];
 					foreach($line as $fieldKey => $fieldValue) {
+						// Replace the values
 						$newline = str_replace($this->_openToken.$fieldKey.$this->_closeToken, $fieldValue, $newline);
 					}
+					// Aggregate - this will probably fall over if the inputs/source are
+					// big enough and your PHP memory limits low enough. 
 					$fieldset .= $newline;
 				}
-				
+				// Replace the pair of outer tokens, plus their contents, with the 
+				// computed string.
 				$this->_source = str_replace($matches[0][0], $fieldset, $this->_source);
 				
 			} else {
+				// The input is just a value, so simple replacement will do.
 				$this->_source = str_replace($this->_openToken.$key.$this->_closeToken, $value, $this->_source);
 			}
 		}

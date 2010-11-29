@@ -7,7 +7,7 @@ I'm putting this code up more in an effort to 'get stuff out there' than because
 
 This code was pretty basic, hacked together in a matter of a few hours for a particular client, whose needs were pretty specific (generating RTF files from a template based on user input to a web form, and possibly later extending the template without our input and without having to teach their staff PHP).
 
-It's not the most elegant way to do this, and the code is pretty primitive. Caveat emptor.
+It's not the most elegant way to do this, and the code is pretty primitive (regexps are usually a suboptimal tool for a parser, but they were quick and easy to use in this case). Caveat emptor.
 
 # BASIC USAGE
 
@@ -33,7 +33,9 @@ This is some tasty text. Tokens will be replaced by appropriate good times.
 
 # REPEATING REPLACEMENTS
 
-You can also do more complex things with repeating replacements. If a key-value pair in the input is an array, the corresponding token will be treated as containing other tokens that are to be replaced for all values. Alright, that's hard to explain in text, so let me demonstrate:
+You can also do more complex things with repeating replacements. If a key-value pair in the input is an array, the corresponding token will be treated as containing other tokens that are to be replaced for all values. The text of the 'closing tag' of the repeated token group must be preceeded by a forward-slash (/) (similar to HTML tags).
+
+Alright, that's hard to explain in text, so let me demonstrate:
 
 <code>
 $string = <<<EOT
@@ -78,3 +80,5 @@ This is some more text. Obviously.
 	Field 2: Bar
 </code>
 
+NOTE: If you don't provide an array of inputs for a multi-line token, things will fall over horribly. We use the inputs during processing to determine if a token is a multi-line group or a one-off. This is a huge caveat and should definitely be fixed
+at some point in the future (but it worked for my particular case).
