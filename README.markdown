@@ -1,5 +1,5 @@
 A trivially simple token-replacement tool (I hesitate to call it a 'library').
-Given a token format (ie. '<<TOKEN>>' or '{TOKEN}') and a set of key-value pairs, we parse some body of text and replace those tokens with the appropriate values.
+Given a token format (ie. '&lt;&lt;TOKEN&gt;&gt;' or '{TOKEN}') and a set of key-value pairs, we parse some body of text and replace those tokens with the appropriate values.
 
 # DISCLAIMER
 
@@ -12,23 +12,23 @@ It's not the most elegant way to do this, and the code is pretty primitive (rege
 # BASIC USAGE
 
 A simple example...
-
 <code>
-<?php
-$string = "This is some <<TEXT>>. Tokens will be replaced by appropriate <<VALUES>>.";
-$keysAndValues = array('TEXT'=>'tasty text', 'VALUES' => 'good times');
-$replaced_string = new ScarletTokenizer()
-					->setSource($string)
-					->setTokenFormat('<<', '>>')
-					->setInputs($keysAndValues)
-					->replaceTokens();
-echo $replaced_string;
-?>
+    $string = "This is some <<TEXT>>. Tokens will be replaced by appropriate <<VALUES>>.";
+
+    $keysAndValues = array('TEXT'=>'tasty text', 'VALUES' =>'good times');
+
+    $tokenizer = new ScarletTokenizer();
+	$replaced_string = $tokenizer->setSource($string)
+						->setTokenFormat('<<', '>>')
+						->setInputs($keysAndValues)
+						->replaceTokens();
+    echo $replaced_string;
 </code>
 
 Outputs:
+
 <code>
-This is some tasty text. Tokens will be replaced by appropriate good times.
+    This is some tasty text. Tokens will be replaced by appropriate good times.
 </code>
 
 # REPEATING REPLACEMENTS
@@ -38,15 +38,15 @@ You can also do more complex things with repeating replacements. If a key-value 
 Alright, that's hard to explain in text, so let me demonstrate:
 
 <code>
-$string = <<<EOT
-This is some more text. {TOKEN1}
-{MULTILINE}
-	Field 1: {Value1}
-	Field 2: {Value2}
-{/MULTILINE}
-<<<EOT;
+    $string = <<<EOT
+    This is some more text. {TOKEN1}
+    {MULTILINE}
+	    Field 1: {Value1}
+	    Field 2: {Value2}
+    {/MULTILINE}
+    <<<EOT;
 
-$keysAndValues = array(
+    $keysAndValues = array(
 					'TOKEN1'=>'Obviously.', 
 					'MULTILINE' => array(
 						array(
@@ -59,25 +59,24 @@ $keysAndValues = array(
 						)
  				 	)
 				);
-
-$replaced_string = new ScarletTokenizer()
-					->setSource($string)
+	$tokenizer = new ScarletTokenizer();
+    $replaced_string = $tokenizer->setSource($string)
 					->setTokenFormat('<<', '>>')
 					->setInputs($keysAndValues)
 					->replaceTokens();
 
-echo $replaced_string;
+    echo $replaced_string;
 </code>
 
 Outputs:
 <code>
-This is some more text. Obviously.
+    This is some more text. Obviously.
 
-	Field 1: Hello
-	Field 2: World
+	    Field 1: Hello
+	    Field 2: World
 
-	Field 1: Foo
-	Field 2: Bar
+	    Field 1: Foo
+	    Field 2: Bar
 </code>
 
 NOTE: If you don't provide an array of inputs for a multi-line token, things will fall over horribly. We use the inputs during processing to determine if a token is a multi-line group or a one-off. This is a huge caveat and should definitely be fixed
